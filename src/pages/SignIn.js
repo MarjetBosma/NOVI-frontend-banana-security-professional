@@ -11,26 +11,24 @@ function SignIn() {
   const [error, toggleError] = useState(false);
   const [loading, toggleLoading] = useState(false);
   const navigate = useNavigate();
-  ;
+
     async function onSubmit(data) {
         toggleError(false);
         toggleLoading(true);
         try {
-            const result = await axios.post('http://localhost:3000/login', {
-                email: email,
-                password: password,
-            });
+            const result = await axios.post('http://localhost:3000/login', data)
                 console.log(result.data);
                 navigate('/profile');
                 login(result.data.accessToken);
             } catch(e) {
-                console.error(e);
+                console.error("Inloggen mislukt", e);
                 toggleError(true);
+                <p className="error">Inloggen mislukt</p>
             }
         toggleLoading(false);
     }
 
-    console.log('Errors', errors);
+    // console.log('Errors', errors);
 
     return (
     <>
@@ -45,10 +43,10 @@ function SignIn() {
                   id="email-field"
                   {...register("email", {
                       required: "Dit veld is verplicht",
-                      validate: (value) => value.includes('@'),
+                      validate: (value) => value.includes('@') || "Emailadres moet een @ bevatten",
                   })}
               />
-              errors.email && <p>{errors.email.message}</p>
+              {errors.email && <p className="error">{errors.email.message}</p>}
           </label>
           <label htmlFor="password-field">
               Wachtwoord:
@@ -59,9 +57,10 @@ function SignIn() {
                       required: "Dit veld is verplicht",
               })}
               />
-              errors.password && <p>{errors.password.message}</p>
+              {errors.password && <p className="error">{errors.password.message}</p>}
           </label>
           {error && <p className="error">Combinatie van emailadres en wachtwoord is onjuist</p>}
+
           <button
               type="submit"
               className="form-button"

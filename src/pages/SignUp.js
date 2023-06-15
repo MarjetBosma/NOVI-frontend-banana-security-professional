@@ -4,7 +4,7 @@ import axios from 'axios'
 import { useForm } from 'react-hook-form';
 
 function SignUp() {
-    const { register, handleSubmit, formState: { errors } } = useForm()
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const [error, toggleError] = useState(false);
     const [loading, toggleLoading] = useState(false);
     const navigate = useNavigate();
@@ -17,13 +17,14 @@ function SignUp() {
             console.log(result.data);
             navigate('/signin');
           } catch(e) {
-            console.error(e);
+            console.error("Registratie mislukt", e);
             toggleError(true);
+            <p className="error">Registreren mislukt</p>
           }
       toggleLoading(false);
     }
 
-    console.log('Errors', errors);
+    // console.log('Errors', errors);
 
   return (
     <>
@@ -31,6 +32,7 @@ function SignUp() {
       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur atque consectetur, dolore eaque eligendi
         harum, numquam, placeat quisquam repellat rerum suscipit ullam vitae. A ab ad assumenda, consequuntur deserunt
         doloremque ea eveniet facere fuga illum in numquam quia reiciendis rem sequi tenetur veniam?</p>
+
       <form onSubmit={handleSubmit(onSubmit)}>
             <label htmlFor="name-field">
                 Emailadres:
@@ -39,10 +41,10 @@ function SignUp() {
                    id="email-field"
                    {...register('email', {
                        required: "Dit veld is verplicht",
-                       validate: (value) => value.includes('@'),
+                       validate: (value) => value.includes('@') || "Emailadres moet een @ bevatten",
                    })}
                 />
-            errors.email && <p>{errors.email.message}</p>
+                {errors.email && <p className="error">{errors.email.message}</p>}
           </label>
           <label htmlFor="password-field">
               Wachtwoord:
@@ -57,7 +59,7 @@ function SignUp() {
                     }
                 })}
             />
-            errors.password && <p>{errors.password.message}</p>
+              {errors.password && <p className="error">{errors.password.message}</p>}
           </label>
           <label htmlFor="name-field">
               Gebruikersnaam:
@@ -67,12 +69,12 @@ function SignUp() {
                   {...register('username', {
                       required: "Dit veld is verplicht",
                       minLength: {
-                          value: 6,
+                          value: 3,
                           message: "De gebruikersnaam moet minimaal 3 karakters bevatten",
                       }
                   })}
               />
-              errors.username && <p>{errors.username.message}</p>
+              {errors.username && <p className="error">{errors.username.message}</p>}
           </label>
           <button
               type="submit"
