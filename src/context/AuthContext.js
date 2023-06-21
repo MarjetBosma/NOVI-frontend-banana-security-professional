@@ -8,7 +8,8 @@ export const AuthContext = createContext({});
 function AuthContextProvider({ children }) {
   const [isAuth, setIsAuth] = useState({
     isAuth: false,
-    user: null
+    user: null,
+    status: 'pending'
   });
   const navigate = useNavigate();
 

@@ -39,10 +39,13 @@ function SignIn() {
           <label htmlFor="email-field">
               Emailadres:
               <input
-                  type="email"
+                  type="text"
                   id="email-field"
                   {...register("email", {
-                      required: "Dit veld is verplicht",
+                      required: {
+                          value: true,
+                          message: 'Dit veld is verplicht',
+                      },
                       validate: (value) => value.includes('@') || "Emailadres moet een @ bevatten",
                   })}
               />
@@ -54,7 +57,10 @@ function SignIn() {
                   type="password"
                   id="password-field"
                   {...register("password", {
-                      required: "Dit veld is verplicht",
+                      required: {
+                          value: true,
+                          message: 'Dit veld is verplicht',
+                      }
               })}
               />
               {errors.password && <p className="error">{errors.password.message}</p>}

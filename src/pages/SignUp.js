@@ -15,7 +15,8 @@ function SignUp() {
         try {
           const result = await axios.post('http://localhost:3000/register', data);
             console.log(result.data);
-            navigate('/signin');
+            console.log("Registratie gelukt!")
+            navigate('/profile');
           } catch(e) {
             console.error("Registratie mislukt", e);
             toggleError(true);
