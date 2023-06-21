@@ -9,24 +9,29 @@ function AuthContextProvider({ children }) {
   const [isAuth, setIsAuth] = useState({
     isAuth: false,
     user: null,
-    status: 'pending'
+    status: 'pending',
   });
   const navigate = useNavigate();
 
-  function login(accessToken) {
-    console.log(accessToken)
-    const decodedToken = jwt_decode(accessToken);
-    localStorage.setItem('token', accessToken);
-    console.log(decodedToken)
-    setIsAuth({
-      ...isAuth,
-      isAuth: true,
-      user: {
-        email: decodedToken.email,
-        id: decodedToken.sub,
+  useEffect( () => {
+    const token = localStorage.getItem('token');
+      if (token) {
+        const decodedToken = jwt_decode(token);
+        void fetchUserData (decodedToken.sub, token);
+      } else {
+        setIsAuth( {
+          isAuth: false,
+          user: null,
+          status: 'done'
+        });
       }
-    })
-    console.log('Gebruiker is ingelogd!');
+    }, []);
+
+  function login(accessToken) {
+    localStorage.setItem('token', accessToken);
+    const decodedToken = jwt_decode(accessToken)
+
+    void fetchUserData(decodedToken.sub, accessToken, '/profile');
     navigate('/profile');
   }
 
@@ -36,9 +41,45 @@ function AuthContextProvider({ children }) {
       ...isAuth,
       isAuth: false,
       user: null,
+      status: 'done',
     })
     console.log('Gebruiker is uitgelogd!');
     navigate('/');
+  }
+
+  async function fetchUserData(id, token, redirectUrl) {
+    try {
+      const result = await axios.get( `http://localhost:3000/600/users/${ id }`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      } );
+
+      // zet de gegevens in de state
+      setIsAuth( {
+        ...isAuth,
+        isAuth: true,
+        user: {
+          username: result.data.username,
+          email: result.data.email,
+          id: result.data.id,
+        },
+        status: 'done',
+      } );
+
+      if (redirectUrl) {
+        navigate(redirectUrl);
+      }
+
+    } catch(e) {
+      console.error(e);
+      setIsAuth( {
+        isAuth: false,
+        user: null,
+        status: 'done',
+      } );
+    }
   }
 
   const contextData = {
@@ -50,7 +91,7 @@ function AuthContextProvider({ children }) {
 
   return (
     <AuthContext.Provider value={contextData}>
-      {children}
+      { isAuth.status === 'done' ? children : <p>Loading...</p>}
     </AuthContext.Provider>
   );
 }

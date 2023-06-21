@@ -20,7 +20,6 @@ function SignUp() {
           } catch(e) {
             console.error("Registratie mislukt", e);
             toggleError(true);
-            <p className="error">Registreren mislukt</p>
           }
       toggleLoading(false);
     }
@@ -77,6 +76,7 @@ function SignUp() {
               />
               {errors.username && <p className="error">{errors.username.message}</p>}
           </label>
+          {error && <p className="error">Registreren mislukt. Controleer netwerkverbinding.</p>}
           <button
               type="submit"
               className="form-button"

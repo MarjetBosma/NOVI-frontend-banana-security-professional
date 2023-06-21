@@ -23,7 +23,6 @@ function SignIn() {
             } catch(e) {
                 console.error("Inloggen mislukt", e);
                 toggleError(true);
-                <p className="error">Inloggen mislukt</p>
             }
         toggleLoading(false);
     }
@@ -39,13 +38,10 @@ function SignIn() {
           <label htmlFor="email-field">
               Emailadres:
               <input
-                  type="text"
+                  type="email"
                   id="email-field"
                   {...register("email", {
-                      required: {
-                          value: true,
-                          message: 'Dit veld is verplicht',
-                      },
+                      required: 'Dit veld is verplicht',
                       validate: (value) => value.includes('@') || "Emailadres moet een @ bevatten",
                   })}
               />
@@ -57,15 +53,12 @@ function SignIn() {
                   type="password"
                   id="password-field"
                   {...register("password", {
-                      required: {
-                          value: true,
-                          message: 'Dit veld is verplicht',
-                      }
+                      required: 'Dit veld is verplicht',
               })}
               />
               {errors.password && <p className="error">{errors.password.message}</p>}
           </label>
-          {error && <p className="error">Combinatie van emailadres en wachtwoord is onjuist</p>}
+          {error && <p className="error">Inloggen mislukt. Controleer netwerkverbinding en/of gegevens.</p>}
 
           <button
               type="submit"
