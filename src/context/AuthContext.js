@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
+import checkTokenValidity from "../helper/checkTokenValidity";
 import axios from 'axios';
 
 export const AuthContext = createContext({});
@@ -15,7 +16,8 @@ function AuthContextProvider({ children }) {
 
   useEffect( () => {
     const token = localStorage.getItem('token');
-      if (token) {
+      if (token && checkTokenValidity(token)) {
+        void login(token)
         const decodedToken = jwt_decode(token);
         void fetchUserData (decodedToken.sub, token);
       } else {
@@ -49,7 +51,7 @@ function AuthContextProvider({ children }) {
 
   async function fetchUserData(id, token, redirectUrl) {
     try {
-      const result = await axios.get( `http://localhost:3000/600/users/${ id }`, {
+      const result = await axios.get( `http://localhost:3000/600/users/${id}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

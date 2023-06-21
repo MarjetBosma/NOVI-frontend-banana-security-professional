@@ -4,28 +4,33 @@ import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 
 function Profile() {
-  const [profileData, setProfileData] = useState({});
-  const { user } = useContext(AuthContext);
+    const [profileData, setProfileData] = useState({});
+    const { user } = useContext(AuthContext);
+    const controller = new AbortController();
 
-  useEffect(() => {
-      async function fetchProfileData() {
-          const token = localStorage.getItem('token');
+    useEffect(() => {
+        async function fetchProfileData() {
+            const token = localStorage.getItem('token');
+            try {
+                const result = await axios.get('http://localhost:3000/660/private-content', {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    signal: controller.signal
+                });
+                setProfileData(result.data);
+            } catch (e) {
+                console.error("Profieldata ophalen mislukt", e);
+            }
+        }
 
-          try {
-              const result = await axios.get('http://localhost:3000/660/private-content', {
-                  headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${token}`,
-                  },
-              });
-              setProfileData(result.data);
-          } catch(e) {
-              console.error(e);
-          }
-      }
+        void fetchProfileData();
 
-      void fetchProfileData();
-  }, [])
+        return function cleanup() {
+        controller.abort();
+        }
+    }, []);
 
     return (
         <>
@@ -47,5 +52,4 @@ function Profile() {
         </>
     );
 }
-
 export default Profile;
