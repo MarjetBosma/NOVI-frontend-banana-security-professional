@@ -67,12 +67,16 @@ h2 {
   margin-top: 10px;
 }
 
-.error {
+.error-message {
   color: red;
   font-size: 12px;
   font-weight: 300;
   position: absolute;
   margin-block: -15px;
+}
+
+.loading-message {
+  margin-left: 30px;
 }
 
 nav {

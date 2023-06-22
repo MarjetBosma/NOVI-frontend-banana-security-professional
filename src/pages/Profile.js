@@ -6,9 +6,11 @@ import axios from 'axios';
 function Profile() {
     const [profileData, setProfileData] = useState({});
     const { user } = useContext(AuthContext);
-    const controller = new AbortController();
+
 
     useEffect(() => {
+        const controller = new AbortController();
+
         async function fetchProfileData() {
             const token = localStorage.getItem('token');
             try {
@@ -24,11 +26,10 @@ function Profile() {
                 console.error("Profieldata ophalen mislukt", e);
             }
         }
-
         void fetchProfileData();
 
         return function cleanup() {
-        controller.abort();
+            controller.abort();
         }
     }, []);
 
@@ -52,4 +53,5 @@ function Profile() {
         </>
     );
 }
+
 export default Profile;

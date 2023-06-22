@@ -7,10 +7,14 @@ function SignUp() {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [error, toggleError] = useState(false);
     const [loading, toggleLoading] = useState(false);
+    const controller = new AbortController();
     const navigate = useNavigate();
 
     useEffect(() => {
-        const controller = new AbortController();
+        return function cleanup() {
+            controller.abort();
+        }
+    }, []);
 
         async function onSubmit(data) {
             toggleError(false);
@@ -21,18 +25,13 @@ function SignUp() {
                 });
                 console.log(result.data);
                 console.log("Registratie gelukt!")
-                navigate('/profile');
+                navigate('/signin');
             } catch (e) {
                 console.error("Registratie mislukt", e);
                 toggleError(true);
             }
             toggleLoading(false);
         }
-
-        return function cleanup() {
-            controller.abort();
-        }
-    }, []);
 
     return (
         <>
@@ -44,17 +43,17 @@ function SignUp() {
                 doloremque ea eveniet facere fuga illum in numquam quia reiciendis rem sequi tenetur veniam?</p>
 
             <form onSubmit={handleSubmit(onSubmit)}>
-                <label htmlFor="name-field">
+                <label htmlFor="email-field">
                     Emailadres:
                     <input
-                        type="email"
+                        type="text"
                         id="email-field"
                         {...register('email', {
                             required: "Dit veld is verplicht",
                             validate: (value) => value.includes('@') || "Emailadres moet een @ bevatten",
                         })}
                     />
-                    {errors.email && <p className="error">{errors.email.message}</p>}
+                    {errors.email && <p className="error-message">{errors.email.message}</p>}
                 </label>
                 <label htmlFor="password-field">
                     Wachtwoord:
@@ -69,9 +68,9 @@ function SignUp() {
                             }
                         })}
                     />
-                    {errors.password && <p className="error">{errors.password.message}</p>}
+                    {errors.password && <p className="error-message">{errors.password.message}</p>}
                 </label>
-                <label htmlFor="name-field">
+                <label htmlFor="username-field">
                     Gebruikersnaam:
                     <input
                         type="text"
@@ -84,9 +83,9 @@ function SignUp() {
                             }
                         })}
                     />
-                    {errors.username && <p className="error">{errors.username.message}</p>}
+                    {errors.username && <p className="error-message">{errors.username.message}</p>}
                 </label>
-                {error && <p className="error">Registreren mislukt. Controleer netwerkverbinding.</p>}
+                {error && <p className="error-message">Registreren mislukt. Controleer netwerkverbinding.</p>}
                 <button
                     type="submit"
                     className="form-button"

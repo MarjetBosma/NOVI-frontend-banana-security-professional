@@ -2,18 +2,21 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { useForm } from 'react-hook-form';
-import axios from "axios";
-
+import axios from 'axios';
 
 function SignIn() {
     const { login } = useContext(AuthContext);
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [error, toggleError] = useState(false);
     const [loading, toggleLoading] = useState(false);
+    const controller = new AbortController();
     const navigate = useNavigate();
 
     useEffect(() => {
-        const controller = new AbortController();
+        return function cleanup() {
+            controller.abort();
+        }
+    }, []);
 
         async function onSubmit(data) {
             toggleError(false);
@@ -23,6 +26,7 @@ function SignIn() {
                     signal: controller.signal
                 });
                 console.log(result.data);
+                console.log("Gebruiker is ingelogd!")
                 navigate('/profile');
                 login(result.data.accessToken);
             } catch (e) {
@@ -31,11 +35,6 @@ function SignIn() {
             }
             toggleLoading(false);
         }
-
-        return function cleanup() {
-            controller.abort();
-        }
-    }, []);
 
     return (
         <>
@@ -47,14 +46,14 @@ function SignIn() {
                 <label htmlFor="email-field">
                     Emailadres:
                     <input
-                        type="email"
+                        type="text"
                         id="email-field"
                         {...register("email", {
                             required: "Dit veld is verplicht",
                             validate: (value) => value.includes('@') || "Emailadres moet een @ bevatten",
                         })}
                     />
-                    {errors.email && <p className="error">{errors.email.message}</p>}
+                    {errors.email && <p className="error-message">{errors.email.message}</p>}
                 </label>
                 <label htmlFor="password-field">
                     Wachtwoord:
@@ -65,9 +64,9 @@ function SignIn() {
                             required: "Dit veld is verplicht",
                         })}
                     />
-                    {errors.password && <p className="error">{errors.password.message}</p>}
+                    {errors.password && <p className="error-message">{errors.password.message}</p>}
                 </label>
-                {error && <p className="error">Inloggen mislukt. Controleer netwerkverbinding en/of gegevens.</p>}
+                {error && <p className="error-message">Inloggen mislukt. Controleer netwerkverbinding en/of gegevens.</p>}
 
                 <button
                     type="submit"

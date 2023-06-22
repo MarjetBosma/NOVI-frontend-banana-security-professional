@@ -21,11 +21,7 @@ function AuthContextProvider({ children }) {
         const decodedToken = jwt_decode(token);
         void fetchUserData (decodedToken.sub, token);
       } else {
-        setIsAuth( {
-          isAuth: false,
-          user: null,
-          status: 'done'
-        });
+          void logout()
       }
     }, []);
 
@@ -58,7 +54,6 @@ function AuthContextProvider({ children }) {
         },
       } );
 
-      // zet de gegevens in de state
       setIsAuth( {
         ...isAuth,
         isAuth: true,
@@ -93,7 +88,7 @@ function AuthContextProvider({ children }) {
 
   return (
     <AuthContext.Provider value={contextData}>
-      { isAuth.status === 'done' ? children : <p>Loading...</p>}
+      { isAuth.status === 'done' ? children : <h2 className="loading-message">Loading...</h2>}
     </AuthContext.Provider>
   );
 }
