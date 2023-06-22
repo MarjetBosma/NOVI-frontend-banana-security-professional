@@ -38,7 +38,7 @@ form {
   flex-direction: column;
   background-color: #faeab3;
   padding: 32px;
-  max-width: 300px;
+  max-width: 320px;
   border-radius: 4px;
 }
 
@@ -50,7 +50,8 @@ form label {
 form input {
   width: 100%;
   padding: 4px 8px;
-  margin: 6px 0;
+  margin-top: 6px;
+  margin-bottom: 16px;
 }
 
 h2 {
@@ -63,6 +64,19 @@ h2 {
 
 .form-button {
   width: 100%;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  font-weight: 300;
+  position: absolute;
+  margin-block: -15px;
+}
+
+.loading-message {
+  margin-left: 30px;
 }
 
 nav {
